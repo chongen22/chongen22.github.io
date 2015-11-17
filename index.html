@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>醫院掛號系統</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="css/styles.css" rel="stylesheet">
+        <!-- script references -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <style> *{font-family: 微軟正黑體;}</style>
+	</head>
+	<body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        	
+        	<div class="navbar-header">
+        		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        		<span class="sr-only">醫院掛號系統</span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+        		</button>
+        		<a class="navbar-brand" rel="home" href="#">醫院掛號系統</a>
+        	</div>
+        	
+        	<div class="collapse navbar-collapse">
+        		<ul class="nav navbar-nav">
+        			<li><a href="#">設定看診號碼</a></li>
+        		</ul>
+        	</div>
+        </div>
+
+
+        <div class="container">
+          
+          <div class="text-center">
+            <h1>醫院掛號系統</h1>
+            <hr>
+            <p class="lead">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label class="col-sm-4 control-label">請選擇科別：</label>
+                <div class="col-sm-6">
+                  <select id="department" name="department" class="form-control">
+                    <option value="1">小兒科</option>
+                    <option value="2">婦產科</option>
+                    <option value="3">骨科</option>
+                    <option value="4">眼科</option>
+                    <option value="5">耳鼻喉科</option>
+                  </select>
+                </div>
+               </div>
+            </form>
+            </p>
+          </div>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4" style="text-align:center">
+                    現在看診號碼：
+                    <span id="select_counter" style="font-size:25px; font-weight:bolder; color:#e63462">1號</span>
+                </div>
+            </div>
+        </div><!-- /.container -->
+
+
+        <script>
+            $(function() {
+                var now_counter = new Array("1", "1", "1", "1", "1");
+                var now_selectrd = 1 ;
+                setInterval(counter_plus,5000); //5秒跑一次
+                //alert(now_counter.length);
+                function counter_plus(){
+                    for(var i =0 ; i<= 5 ; i++){
+                        now_counter[i]++;
+                        console.log(now_counter[i]);
+                    }
+                    $("#select_counter").text(now_counter[now_selectrd-1]+"號");
+                }
+                $("#department").change(function(){
+                    now_selectrd = $(this).val();
+                    switch (now_selectrd) {
+                    case "1":
+                        $("#select_counter").text(now_counter[0]+"號");
+                      break;
+                    case "2":
+                        $("#select_counter").text(now_counter[1]+"號");
+                      break;
+
+                    case "3":
+                        $("#select_counter").text(now_counter[2]+"號");
+                      break;
+
+                    case "4":
+                        $("#select_counter").text(now_counter[3]+"號");
+                      break;
+
+                    case "5":
+                        $("#select_counter").text(now_counter[4]+"號");
+                      break;
+                      
+                    } 
+                });
+
+            });
+        </script>
+
+
+
+	   
+	</body>
+</html>
