@@ -14,7 +14,7 @@
         <!-- script references -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
-        <style> 
+        <style>
             *{font-family: 微軟正黑體;}
             .number_btn{margin: 7px 0 ;}
         </style>
@@ -29,12 +29,12 @@
         		<span class="icon-bar"></span>
         		<span class="icon-bar"></span>
         		</button>
-        		<a class="navbar-brand" rel="home" href="#">醫院掛號系統</a>
+        		<a class="navbar-brand" rel="home" href="#" >醫院掛號系統</a>
         	</div>
 
         	<div class="collapse navbar-collapse">
         		<ul class="nav navbar-nav">
-        			<li><a href="#">設定看診號碼</a></li>
+        			<li><a id="set_num" href="javascript:void(0)">設定看診號碼</a></li>
         		</ul>
         	</div>
         </div>
@@ -68,50 +68,63 @@
                 </div>
             </div>
             <hr>
-            <div class="row">
-                <div class="col-md-4 col-md-offset-4" style="text-align:center">
+            <div id="set_num_div" class="row" style="display:none;">
+                <div class="col-md-4 col-md-offset-4 " style="text-align:center; border:1px #ddd solid; padding:15px;border-radius: 4px; background:#F6F6F6;">
                     <div class="col-md-12">
-                        請輸入您要指定到號碼：
+                        您現在選擇的科別是 <span id="change_title" style="font-size:23px;">小兒科</span><br>請輸入您要指定到號碼：
                     </div>
                     <div class="col-md-12">
-                        <input class="form-control" type="text" placeholder="22" readonly>
+                        <input align="right" id="view_val" class="form-control" type="text" value="1" readonly style="text-align:right;">
                         <hr>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">1</button>
+                        <button type="button" class="btn btn-default numBtn" num="1">1</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">2</button>
+                        <button type="button" class="btn btn-default numBtn" num="2">2</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">3</button>
+                        <button type="button" class="btn btn-default numBtn" num="3">3</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">4</button>
+                        <button type="button" class="btn btn-default numBtn" num="4">4</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">5</button>
+                        <button type="button" class="btn btn-default numBtn" num="5">5</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">6</button>
+                        <button type="button" class="btn btn-default numBtn" num="6">6</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">7</button>
+                        <button type="button" class="btn btn-default numBtn" num="7">7</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">8</button>
+                        <button type="button" class="btn btn-default numBtn" num="8">8</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">9</button>
+                        <button type="button" class="btn btn-default numBtn" num="9">9</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-danger">後退一號</button>
+                        <button type="button" class="btn btn-info" id="reset">重置</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-default">0</button>
+                        <button type="button" class="btn btn-default numBtn" num="0">0</button>
                     </div>
                     <div class="col-md-4 col-xs-4 number_btn">
-                        <button type="button" class="btn btn-success">前進一號</button>
+                        <button type="button" class="btn btn-warning" id="backspace">←</button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 number_btn">
+                        <button type="button" class="btn btn-danger" id="back_num">後退一號</button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 number_btn">
+                        <button type="button" class="btn btn-primary" id="finish">確定送出</button>
+                    </div>
+                    <div class="col-md-4 col-xs-4 number_btn">
+                        <button type="button" class="btn btn-success" id="next_num">前進一號</button>
+                    </div>
+                    <div class="col-md-12">
+                        <hr>
+                        <span id="finish_status" style="font-size:18px; font-weight:bolder; color:red;"></span>
                     </div>
                 </div>
             </div>
@@ -121,19 +134,28 @@
         <script>
             $(function() {
                 var now_counter = new Array("1", "1", "1", "1", "1");
-                var now_selectrd = 1 ;
-                setInterval(counter_plus,5000); //5秒跑一次
-                //alert(now_counter.length);
+                var now_selected = 1 ; //初始
+                var now_selected_text = "小兒科"; //初始
+                var temp_val = 0 ;  //暫存被運算數
+                var counter = setInterval(counter_plus,5000); //5秒跑一次
+
                 function counter_plus(){
                     for(var i =0 ; i<= 5 ; i++){
                         now_counter[i]++;
                         console.log(now_counter[i]);
                     }
-                    $("#select_counter").text(now_counter[now_selectrd-1]+"號");
+                    $("#select_counter").text(now_counter[now_selected-1]+"號");
+                    $("#view_val").val(now_counter[now_selected-1]);
+                    $("#finish_status").text("");
                 }
+
+
                 $("#department").change(function(){
-                    now_selectrd = $(this).val();
-                    switch (now_selectrd) {
+                    now_selected_text = $("#department :selected").text();
+                    $("#change_title").text(now_selected_text);
+                    now_selected = $(this).val();
+                    $("#view_val").val(now_counter[now_selected-1]);
+                    switch (now_selected) {
                     case "1":
                         $("#select_counter").text(now_counter[0]+"號");
                       break;
@@ -155,7 +177,93 @@
                     }
                 });
 
+                //重置
+                $("#reset").click(function(){
+                    clearInterval(counter);
+                    if(confirm("請問您要重置 "+now_selected_text+" 的數字嗎？")){
+                        now_counter[now_selected-1]= 0;
+                        $("#view_val").val(now_counter[now_selected-1]);
+                        $("#select_counter").text("0號");
+                        $("#finish_status").text("重置完成！");
+                    }
+                    counter = setInterval(counter_plus,5000);
+                });
+
+                //確認
+                $("#finish").click(function(){
+                    clearInterval(counter);
+                    now_counter[now_selected-1] = $("#view_val").val();
+                    $("#finish_status").text("設定完成！");
+                    $("#view_val").val(now_counter[now_selected-1]);
+                    $("#select_counter").text(now_counter[now_selected-1]+"號");
+                    counter = setInterval(counter_plus,5000);
+                });
+
+                //後退一號
+                $("#back_num").click(function(){
+                    clearInterval(counter);
+                    //防止變負數
+                    if(now_counter[now_selected-1]!=0 && now_counter[now_selected-1]>0){
+                        now_counter[now_selected-1] -- ;
+                        $("#finish_status").text("設定完成！");
+                        $("#view_val").val(now_counter[now_selected-1]);
+                        $("#select_counter").text(now_counter[now_selected-1]+"號");
+                        counter = setInterval(counter_plus,5000);
+                    }else{
+                        now_counter[now_selected-1] = 0;
+                        $("#view_val").val(0);
+                        $("#select_counter").text("0號");
+                        counter = setInterval(counter_plus,5000);
+                    }
+                });
+
+                //前進一號
+                $("#next_num").click(function(){
+                        clearInterval(counter);
+                        now_counter[now_selected-1] ++ ;
+                        $("#finish_status").text("設定完成！");
+                        $("#view_val").val(now_counter[now_selected-1]);
+                        $("#select_counter").text(now_counter[now_selected-1]+"號");
+                        counter = setInterval(counter_plus,5000);
+                });
+
+                //顯示看診號碼設定視窗
+                $("#set_num").click(function(){
+                    //clearInterval(counter);
+                    $("#set_num_div").toggle();
+                });
+
+                //倒退
+                $("#backspace").click(function(){
+                    stop_counter();
+                    curvalue = $("#view_val").val();
+                    curlength = $("#view_val").val().length;
+                    curvalue = curvalue.substring(0,curlength-1);
+                    if(curvalue == ""){
+                        $("#view_val").val("0");
+                    }else{
+                        $("#view_val").val(curvalue);
+                    }
+                });
+
+                //數字顯示
+                $(".numBtn").click(function(){
+                    stop_counter();
+                    str = $(this).attr("num");
+                    if($("#view_val").val()==0) {
+                        $("#view_val").val(str);
+                    } else {
+                        $("#view_val").val($("#view_val").val()+str);
+                    }
+                });
+
+                function stop_counter(){
+                    clearInterval(counter);
+                    $("#finish_status").text("已停止計數，設定完值後才會繼續計數！");
+                }
+
             });
+
         </script>
 
 	</body>
